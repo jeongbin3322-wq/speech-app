@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AURA - Premium Speech Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div class="header-inner">
+          <div class="logo">AURA</div>
+          <nav class="nav">
+            <button class="nav-btn" data-target="home">홈</button>
+            <button class="nav-btn" data-target="news">인사이트</button>
+            <button class="nav-btn" data-target="practice">트레이닝</button>
+            <button class="nav-btn" data-target="analysis">분석 리포트</button>
+          </nav>
+          <div class="user-menu">마이 페이지</div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <!-- Sections will be dynamically managed or scrolled -->
+        <section id="home" class="section hero active">
+          <div class="hero-content">
+            <h1 class="hero-title">세상을 움직이는<br>당신의 목소리</h1>
+            <p class="hero-subtitle">상위 0.1% 리더를 위한 프라이빗 스피치 컨설턴트</p>
+            <button class="cta-btn" onclick="app.navigateTo('practice')">세션 시작하기</button>
+          </div>
+        </section>
+
+        <section id="news" class="section news-section">
+          <div class="section-header">
+            <h2 class="section-title">위클리 인사이트</h2>
+            <p class="section-desc">준비된 리더를 위한 엄선된 지식 큐레이션</p>
+          </div>
+          
+          <div class="news-controls">
+            <div class="news-filters">
+              <button class="filter-btn active" data-category="all">전체</button>
+              <button class="filter-btn" data-category="economy">경제</button>
+              <button class="filter-btn" data-category="politics">정치</button>
+              <button class="filter-btn" data-category="society">사회</button>
+              <button class="filter-btn" data-category="sports">스포츠</button>
+            </div>
+            <div class="news-search">
+              <input type="text" id="news-search-input" placeholder="뉴스 아카이브 검색..." />
+            </div>
+          </div>
+
+          <div class="news-grid" id="news-grid">
+            <!-- News items injected via JS -->
+          </div>
+          
+          <div class="news-actions">
+            <button id="admin-toggle-btn" class="admin-link">관리자 모드</button>
+          </div>
+        </section>
+
+        <!-- Admin Modal -->
+        <div id="admin-modal" class="modal hidden">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>뉴스 관리 시스템</h2>
+              <button class="close-modal">×</button>
+            </div>
+            <div class="admin-form">
+              <select id="admin-category">
+                <option value="economy">경제</option>
+                <option value="politics">정치</option>
+                <option value="society">사회</option>
+                <option value="sports">스포츠</option>
+              </select>
+              <select id="admin-subcategory">
+                <!-- Populated dynamically -->
+              </select>
+              <input type="text" id="admin-title" placeholder="제목을 입력하세요" />
+              <textarea id="admin-excerpt" placeholder="요약 내용을 입력하세요"></textarea>
+              <button id="admin-submit-btn" class="cta-btn small">뉴스 발행</button>
+            </div>
+          </div>
+        </div>
+
+        <section id="practice" class="section practice-section">
+          <div class="section-header">
+            <h2 class="section-title">실전 인터뷰</h2>
+            <p class="section-desc">완벽한 답변을 위한 몰입형 트레이닝</p>
+          </div>
+          <div class="practice-container">
+            <div class="question-card">
+              <span class="label">오늘의 질문</span>
+              <h3 id="current-question" class="question-text">"불확실한 상황에서 리더십을 발휘했던 경험을 말씀해 주세요."</h3>
+              <div class="controls">
+                <button id="start-record-btn" class="control-btn record">
+                  <span class="icon">●</span> 녹음 시작
+                </button>
+                <button id="next-question-btn" class="control-btn secondary">다음 질문</button>
+              </div>
+            </div>
+            <div class="recording-status hidden" id="recording-status">
+              <div class="waveform"></div>
+              <p>경청 중입니다...</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="analysis" class="section analysis-section">
+          <div class="section-header">
+            <h2 class="section-title">AI 인사이트 분석</h2>
+            <p class="section-desc">사고 구조와 전달력을 데이터로 시각화합니다.</p>
+          </div>
+
+          <!-- Analysis Tabs -->
+          <div class="analysis-tabs">
+            <button class="tab-btn active" data-tab="dashboard">대시보드</button>
+            <button class="tab-btn" data-tab="growth">성장 리포트 (Before/After)</button>
+            <button class="tab-btn premium-lock" data-tab="leader">
+              <span class="lock-icon">🔒</span> 리더 모드
+            </button>
+          </div>
+
+          <!-- Dashboard View -->
+          <div id="view-dashboard" class="analysis-view active">
+            <div class="analysis-dashboard">
+              <div class="metric-card main-score">
+                <span class="metric-label">종합 역량 점수</span>
+                <div class="metric-value-lg" id="score-total">92<span class="unit">/100</span></div>
+                <div class="score-bar">
+                  <div class="score-fill" id="score-bar-fill" style="width: 92%;"></div>
+                </div>
+                <p class="metric-sub">상위 1% 수준</p>
+              </div>
+
+              <div class="metrics-grid-sub">
+                <div class="metric-card">
+                  <span class="metric-label">논리적 구조</span>
+                  <div class="metric-value" id="score-logic">A+</div>
+                  <p class="metric-sub">기승전결 완벽</p>
+                </div>
+                <div class="metric-card">
+                  <span class="metric-label">어휘 품격</span>
+                  <div class="metric-value" id="score-vocab">95</div>
+                  <p class="metric-sub">전문적/권위적</p>
+                </div>
+                <div class="metric-card">
+                  <span class="metric-label">설득력</span>
+                  <div class="metric-value" id="score-persuasion">90</div>
+                  <p class="metric-sub">감성적 호소력 우수</p>
+                </div>
+                <div class="metric-card">
+                  <span class="metric-label">발화 안정성</span>
+                  <div class="metric-value" id="score-stability">98</div>
+                  <p class="metric-sub">흔들림 없는 톤</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="feedback-panel">
+              <h3>AI 디렉터 코멘트</h3>
+              <p id="ai-feedback-text">"핵심 주장에 대한 근거 제시가 매우 논리적입니다. 다만, 중반부에서 호흡이 다소 빨라지는 경향이 있어 청중의 이해를 돕기 위한 '전략적 침묵(Strategic Silence)'을 0.5초 더 활용하시길 권장합니다."</p>
+            </div>
+          </div>
+
+          <!-- Growth View (Before/After) -->
+          <div id="view-growth" class="analysis-view hidden">
+            <div class="growth-container">
+              <div class="growth-header">
+                <h3>훈련 성과 리포트</h3>
+                <p>지난 4주간의 사고력 및 전달력 변화 추이</p>
+              </div>
+              
+              <div class="comparison-grid">
+                <div class="comparison-card before">
+                  <span class="badge">BEFORE (4주 전)</span>
+                  <div class="stat-row">
+                    <span>논리 점수</span>
+                    <strong>78</strong>
+                  </div>
+                  <div class="stat-row">
+                    <span>불필요한 추임새</span>
+                    <strong>12회</strong>
+                  </div>
+                  <div class="stat-row">
+                    <span>핵심 키워드</span>
+                    <strong>모호함</strong>
+                  </div>
+                </div>
+                
+                <div class="arrow-divider">→</div>
+                
+                <div class="comparison-card after">
+                  <span class="badge">AFTER (현재)</span>
+                  <div class="stat-row">
+                    <span>논리 점수</span>
+                    <strong class="highlight">92 (+14)</strong>
+                  </div>
+                  <div class="stat-row">
+                    <span>불필요한 추임새</span>
+                    <strong class="highlight">0회 (-12)</strong>
+                  </div>
+                  <div class="stat-row">
+                    <span>핵심 키워드</span>
+                    <strong class="highlight">명확/강렬</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-area">
+                <!-- CSS Chart Simulation -->
+                <div class="bar-chart">
+                  <div class="bar-group">
+                    <div class="bar before" style="height: 60%;"></div>
+                    <div class="bar after" style="height: 90%;"></div>
+                    <span class="bar-label">논리력</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar before" style="height: 45%;"></div>
+                    <div class="bar after" style="height: 85%;"></div>
+                    <span class="bar-label">전달력</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar before" style="height: 50%;"></div>
+                    <div class="bar after" style="height: 88%;"></div>
+                    <span class="bar-label">어휘력</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar before" style="height: 70%;"></div>
+                    <div class="bar after" style="height: 95%;"></div>
+                    <span class="bar-label">자신감</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leader Mode View (Gated) -->
+          <div id="view-leader" class="analysis-view hidden">
+            <div class="leader-gate">
+              <div class="gate-content">
+                <span class="crown-icon">👑</span>
+                <h3>AURA PRIVATE CLUB</h3>
+                <p>대한민국 상위 0.1% 리더를 위한 시크릿 훈련 프로그램</p>
+                <ul class="benefit-list">
+                  <li>전담 휴먼 코치 1:1 매칭</li>
+                  <li>비공개 네트워킹 파티 초대</li>
+                  <li>무제한 AI 심층 분석 (감정선/미세표정)</li>
+                  <li>CEO 전용 위기관리 스피치 모듈</li>
+                </ul>
+                <button class="cta-btn premium-btn">멤버십 가입 문의</button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">AURA</div>
+          <p class="copyright">© 2025 AURA Private Systems. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
